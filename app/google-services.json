@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "975491461664",
+    "firebase_url": "https://mobicassegn.firebaseio.com",
+    "project_id": "mobicassegn",
+    "storage_bucket": "mobicassegn.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975491461664:android:9c2e07794831eca2484245",
+        "android_client_info": {
+          "package_name": "com.example.mobicassegn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975491461664-0hjitegcsnivteqkn1bekn7b9492gmrj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mobicassegn",
+            "certificate_hash": "b568cd138edb6ddfcdc6887fed2c728def628b31"
+          }
+        },
+        {
+          "client_id": "975491461664-qga66aqfeoijgodco4jbci5undqkmr9j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQw3Xv7XM9T32wI7UbbHDEAgj47TO-jXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975491461664-qga66aqfeoijgodco4jbci5undqkmr9j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
