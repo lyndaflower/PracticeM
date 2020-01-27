@@ -20,6 +20,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String TAG = RegisterActivity.class.getSimpleName();
@@ -31,6 +32,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mComfirmPassword;
     private Button mSignUp;
     private TextView mLogIn;
+
+    private DatabaseReference mReference;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -102,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Log.d(TAG, "Authentication successful");
                             createFirebaseUserProfile(task.getResult().getUser());
                         } else {
-                            Toast.makeText(RegisterActivity.this, "Your account saved successfully",
+                            Toast.makeText(RegisterActivity.this, "Authentication failed",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -172,7 +175,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void createAuthenticationProgressDialog() {
         mAuthenticationProgressDialog =new ProgressDialog(this);
         mAuthenticationProgressDialog.setTitle("Loading ......");
-        mAuthenticationProgressDialog.setMessage("Sign up to Lancome paris ...");
+        mAuthenticationProgressDialog.setMessage("Registration loading...");
         mAuthenticationProgressDialog.setCancelable(false);
 
     }
