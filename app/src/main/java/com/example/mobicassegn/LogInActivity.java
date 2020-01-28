@@ -26,6 +26,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     private EditText mPasswordEdit;
     private EditText mEmailEdit;
     private Button mPassword;
+    private TextView mForgotPass;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -38,20 +39,22 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         mEmailEdit = (EditText) findViewById(R.id.email);
         mPassword = (Button) findViewById(R.id.loginButton);
         mPasswordEdit = (EditText) findViewById(R.id.password);
+        mForgotPass = (TextView) findViewById(R.id.forgotPassword);
 
         registerEdit.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
         mPassword.setOnClickListener(this);
+        mForgotPass.setOnClickListener(this);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-//                    Intent intent = new Intent(LogInActivity.this, newMainActivity.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//                    finish();
+// Intent intent = new Intent(LogInActivity.this, newMainActivity.class);
+// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+// startActivity(intent);
+// finish();
                 }
             }
         };
@@ -64,8 +67,14 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             startActivity(intent);
             finish();
         }
+        //Login with valid data
         if (v == mPassword) {
             loginWithPassword();
+        }
+        //Resset passsword
+        if (v == mForgotPass){
+            Intent intent = new Intent(LogInActivity.this,ForgotPasswordActivity.class);
+            startActivity(intent);
         }
 
     }

@@ -14,4 +14,10 @@
         android:layout_marginLeft="30dp"
         android:layout_marginTop="40dp"/>
 
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/smilee"
+        android:layout_marginTop="200dp"/>
+
 </RelativeLayout>
