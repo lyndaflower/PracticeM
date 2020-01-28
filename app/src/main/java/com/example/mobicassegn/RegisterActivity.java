@@ -22,8 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +43,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference mDatabase;
+    private static final String USERS = "users";
+    private String username, fname, email;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ProgressDialog mAuthenticationProgressDialog;
     private String mName;
     FirebaseFirestore store;
     String logger;
+    private UserAdapter user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +70,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mLogIn.setOnClickListener(this);
         mSignUp.setOnClickListener(this);
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
+        database = FirebaseDatabase.getInstance();
+        mDatabase = database.getReference(USERS);
         store = FirebaseFirestore.getInstance();
         createAuthenticationProgressDialog();
 
@@ -91,6 +99,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         final String password = mPasswordText.getText().toString().trim();
         final String comfirmPassword = mComfirmPassword.getText().toString().trim();
         mName = mNameEdit.getText().toString().trim();
+        user = new UserAdapter(fname, email);
 
 
         boolean validEmail = isValidEmail(email);
@@ -110,26 +119,34 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Authentication successful");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            updateUI(user);
 
-                            logger = mAuth.getCurrentUser().getUid();
-
-                            DocumentReference documentReference = store.collection("user").document(logger);
-                            createFirebaseUserProfile(task.getResult().getUser());
-                            final Map<String, Object> user = new HashMap<>();
-                            user.put("name", name);
-                            user.put("email", email);
-                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-
-                                    Log.d(TAG, "onSuccess: user profile is created for" + logger);
-                                }
-                            });
-
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "Authentication failed",
-                                    Toast.LENGTH_SHORT).show();
+//                            logger = mAuth.getCurrentUser().getUid();
+//                            DocumentReference documentReference = store.collection("user").document(logger);
+//                            createFirebaseUserProfile(task.getResult().getUser());
+//                            final Map<String, Object> user = new HashMap<>();
+//                            user.put("name", name);
+//                            user.put("email", email);
+//                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                @Override
+//                                public void onSuccess(Void aVoid) {
+//
+//                                    Log.d(TAG, "onSuccess: user profile is created for" + logger);
+//                                }
+//                            });
                         }
+
+//                        } else {
+//                            Toast.makeText(RegisterActivity.this, "Authentication failed",
+//                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    public void updateUI(FirebaseUser currentUser) {
+                        Intent profileIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        profileIntent.putExtra("email", currentUser.getEmail());
+                        Log.v("DATA", currentUser.getUid());
+                        startActivity(profileIntent);
                     }
                 });
     }
