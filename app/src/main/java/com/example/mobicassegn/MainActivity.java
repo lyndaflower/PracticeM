@@ -57,9 +57,8 @@ public class MainActivity extends AppCompatActivity  {
         DatabaseReference userRef = rootRef.child(USERS);
         Log.v("USERID", userRef.getKey());
 
-        nameText = findViewById(R.id.name_textview);
-        emailText = findViewById(R.id.email_textview);
-        emailImageView = findViewById(R.id.email_imageview);
+//        nameText = findViewById(R.id.name_textview);
+//        emailText = findViewById(R.id.email_textview);
 
         mAuth = FirebaseAuth.getInstance();
         mStore = FirebaseFirestore.getInstance();
