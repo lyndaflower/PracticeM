@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView displayEmail;
 
+    private TextView displayName;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         displayEmail = (TextView) findViewById(R.id.textEmail);
+        displayName = (TextView) findViewById(R.id.textName);
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportActionBar().setTitle("Welcome, " + user.getDisplayName() + "!");
 
                     displayEmail.setText("" + user.getEmail());
+                    displayName.setText("" + user.getDisplayName());
                 } else {
 
                 }
