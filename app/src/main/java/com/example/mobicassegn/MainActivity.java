@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 if (user != null) {
                     getSupportActionBar().setTitle("Welcome, " + user.getDisplayName() + "!");
 
-                    displayEmail.setText("User Email adress : " + user.getEmail());
+                    displayEmail.setText("" + user.getEmail());
                 } else {
 
                 }
