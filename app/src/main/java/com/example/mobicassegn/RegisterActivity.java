@@ -30,7 +30,7 @@ import com.google.firebase.firestore.auth.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String TAG = RegisterActivity.class.getSimpleName();
 
     private EditText mNameEdit;
@@ -42,17 +42,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private TextView mLogIn;
 
 
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase database;
-    private DatabaseReference mDatabase;
-    private static final String USERS = "users";
-    private String username, fname, email;
+
+    private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private ProgressDialog mAuthenticationProgressDialog;
     private String mName;
     FirebaseFirestore store;
     String logger;
-    private UserAdapter user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +65,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         mLogIn.setOnClickListener(this);
         mSignUp.setOnClickListener(this);
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        mDatabase = database.getReference(USERS);
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
         store = FirebaseFirestore.getInstance();
         createAuthenticationProgressDialog();
 
         signUpAuthStateListener();
     }
+
 
 
     @Override
@@ -99,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         final String password = mPasswordText.getText().toString().trim();
         final String comfirmPassword = mComfirmPassword.getText().toString().trim();
         mName = mNameEdit.getText().toString().trim();
-        user = new UserAdapter(fname, email);
 
 
         boolean validEmail = isValidEmail(email);
@@ -110,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mAuthenticationProgressDialog.show();
 
 
-        mAuth.createUserWithEmailAndPassword(email, password)
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -119,34 +114,26 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Authentication successful");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
 
-//                            logger = mAuth.getCurrentUser().getUid();
-//                            DocumentReference documentReference = store.collection("user").document(logger);
-//                            createFirebaseUserProfile(task.getResult().getUser());
-//                            final Map<String, Object> user = new HashMap<>();
-//                            user.put("name", name);
-//                            user.put("email", email);
-//                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                @Override
-//                                public void onSuccess(Void aVoid) {
-//
-//                                    Log.d(TAG, "onSuccess: user profile is created for" + logger);
-//                                }
-//                            });
+                            logger = firebaseAuth.getCurrentUser().getUid();
+
+                            DocumentReference documentReference = store.collection("user").document(logger);
+                            createFirebaseUserProfile(task.getResult().getUser());
+                            final Map<String, Object> user = new HashMap<>();
+                            user.put("name",name);
+                            user.put("email", email);
+                            documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    Log.d(TAG,"onSuccess: user profile is created for" + logger);
+                                }
+                            });
+
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Authentication failed",
+                                    Toast.LENGTH_SHORT).show();
                         }
-
-//                        } else {
-//                            Toast.makeText(RegisterActivity.this, "Authentication failed",
-//                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                    public void updateUI(FirebaseUser currentUser) {
-                        Intent profileIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        profileIntent.putExtra("email", currentUser.getEmail());
-                        Log.v("DATA", currentUser.getUid());
-                        startActivity(profileIntent);
                     }
                 });
     }
@@ -172,14 +159,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        firebaseAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+            firebaseAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
@@ -193,15 +180,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private boolean validName(String name) {
-        if (name.equals("")) {
+        if (name.equals("")){
             mNameEdit.setError("Please enter your name ");
             return false;
         }
         return true;
     }
 
-    private boolean validPassword(String password, String comfirmPassword) {
-        if (password.length() < 6) {
+    private boolean validPassword(String password , String comfirmPassword) {
+        if (password.length() <6) {
             mPasswordText.setError("Please create a password with at least 6 characters");
             return false;
         } else if (!password.equals(comfirmPassword)) {
@@ -212,7 +199,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void createAuthenticationProgressDialog() {
-        mAuthenticationProgressDialog = new ProgressDialog(this);
+        mAuthenticationProgressDialog =new ProgressDialog(this);
         mAuthenticationProgressDialog.setTitle("Loading ......");
         mAuthenticationProgressDialog.setMessage("Registration loading...");
         mAuthenticationProgressDialog.setCancelable(false);
@@ -237,4 +224,5 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 });
     }
+
 }

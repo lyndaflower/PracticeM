@@ -24,24 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Map;
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity  {
-    private final String TAG = this.getClass().getName().toUpperCase();
-    private static final String USERS = "users";
-
-
-    private TextView nameText;
-    private TextView emailText;
-    private ImageView emailImageView;
-    private String email;
-
-    private FirebaseDatabase database;
-    private DatabaseReference mDatabase;
-    private Map<String, String> userMap;
+    private TextView displayEmail;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    FirebaseFirestore mStore;
 
 
     @Override
@@ -49,49 +37,16 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //receive data from login screen
-        Intent intent = getIntent();
-        email = intent.getStringExtra("email");
-
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference userRef = rootRef.child(USERS);
-        Log.v("USERID", userRef.getKey());
-
-//        nameText = findViewById(R.id.name_textview);
-//        emailText = findViewById(R.id.email_textview);
-
+        displayEmail = (TextView) findViewById(R.id.textEmail);
         mAuth = FirebaseAuth.getInstance();
-        mStore = FirebaseFirestore.getInstance();
-
-        // Read from the database
-        userRef.addValueEventListener(new ValueEventListener() {
-            String fname;
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot keyId: dataSnapshot.getChildren()) {
-                    if (keyId.child("email").getValue().equals(email)) {
-                        fname = keyId.child("fullName").getValue(String.class);
-                        email = keyId.child("email").getValue(String.class);
-                        break;
-                    }
-                }
-                nameText.setText(fname);
-                emailText.setText(email);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     getSupportActionBar().setTitle("Welcome, " + user.getDisplayName() + "!");
+
+                    displayEmail.setText("User Email adress : " + user.getEmail());
                 } else {
 
                 }
